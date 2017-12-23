@@ -3,7 +3,7 @@ import hashlib
 import random
 
 #variable for the number of initial 0 bits to achieve with the hash
-obits = 1
+obits = 0
 
 hashedblock = ''
 
@@ -19,13 +19,14 @@ def hashblock(block):
         currentblock.setNonce(generate_nonce(25))
         #hash the block
         hashedblock = createHashBlock(currentblock)
+        print(hashedblock)
         #check the first bits to see what they are
         checkbits = int(hashedblock, 16)
         bits = bin(checkbits)[2:]
         print(str(bits))
         i=0
         while (i<=obits):
-            if int(bits)&i !=1:
+            if int(bits)&i !=0:
                 #we found a true bit, need to rerun the nonce, recalculate the hash, and check again
                 break
             else:
@@ -33,6 +34,8 @@ def hashblock(block):
                     print("we are done")
                     finalized = True
                 i+=1
+    
+    return hashedblock
 
 
 def generate_nonce(length):

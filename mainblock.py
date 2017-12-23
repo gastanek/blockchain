@@ -19,7 +19,7 @@ class mainblock():
     #array of transactions to be held.  in our case, this can be anything added to the set
     #it doesn't need to be coin transactions exclusively
     txnSet = []
-    timestamp
+    timestamp = ''
 
     #Main page for our block
     def __init__(self, prevhash):
