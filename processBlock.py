@@ -21,9 +21,8 @@ def processBlock(block):
         
         #now run the hash on the block
         hashedBlock = hashblock(blockToProcess)
-
         #now that we have a returned hash block, we will capture the first 10 characters as our file name and persist it to disk
-        persistBlock(hashedBlock)
+        persistBlock(hashedBlock, blockToProcess)
 
 
 def hashCheck(block):
@@ -44,7 +43,7 @@ def hashCheck(block):
         
 
 
-def persistBlock(block):
+def persistBlock(block, blockdata):
     #take the processed block, create a filename, and persist to disk
     #get the first 10 chars in the hash for the file name
     blockfilename = str(block)[0:10] + ".block"
@@ -52,6 +51,8 @@ def persistBlock(block):
     path = blockfilename
     newBlockFile = open(blockfilename, 'w')
     newBlockFile.write(block)
+    #this isn't correct, the blockdata is an object right now, when implement txn processing will change it to raw data plus hash
+    newBlockFile.write(str(blockdata))
     #TODO: this is only hacked write now with now checks and validation
     newBlockFile.close()
 
