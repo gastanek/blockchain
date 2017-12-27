@@ -40,13 +40,12 @@ def hashCheck(block):
     except IOError:
         print("That block file does not exist.")
         return False
-        
-
+    
 
 def persistBlock(block, blockdata):
     #take the processed block, create a filename, and persist to disk
-    #get the first 10 chars in the hash for the file name
-    blockfilename = str(block)[0:10] + ".block"
+    #get the first 15 chars in the hash for the file name
+    blockfilename = str(block)[0:15] + ".block"
 
     path = blockfilename
     newBlockFile = open(blockfilename, 'w')

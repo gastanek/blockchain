@@ -9,6 +9,15 @@
     What we will persist is two blocks
         1) is the validated block in the chain which includes the merkel tree
         2) is the list of transactions that are included in this block
+
+Todo:
+    - transaction queue to fetch dato to be added to the block
+    - improve the function hashing a block and integrate it with the data fetching
+    - create the merkel tree for a block - update the block persistence file to include the hashed block separate from the txn
+    - 
+
+
+
 '''
 import time
 
