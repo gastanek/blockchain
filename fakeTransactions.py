@@ -1,21 +1,24 @@
 #fake transaction runner
 #used in the shortterm to create fake transactions
 
-import time, random
+import time, random, collections
 from transactionQueue import transactionQueue
+
+#list for storing fake txnids 
+txnIdList = []
 
 def createFakeTxn(queue):
     #create a random transaction id
     chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k' 'l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     txnid = ''.join([str(random.randint(0, 9)) for i in range(6)])
     txndata = ''.join([chars[random.randint(1,24)] for i in range(50)]) #generate random 50 char string
-
-    queue.setTxnInQueue(txnid, txndata)
+    txnIdList.append(txnid)
+    queue.setTxnInQueue(txnid, txndata, random.randint(1,20))
     
 
 if __name__ == '__main__':
     #runnable from this function to test transaction queue 
-    txnMaxCount = 10
+    txnMaxCount = 1
     #initiate the queue
     curQueue = transactionQueue()
     i=0
@@ -27,3 +30,8 @@ if __name__ == '__main__':
         print(str(key))
         print(str(value))
     
+    for a in txnIdList:
+        message, key, value=curQueue.getTxnFromQueue(a, 0)
+        print("Message " + str(message))
+        print("Key " + str(key))
+        print("Value " + str(value))

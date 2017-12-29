@@ -24,6 +24,7 @@ ToDo:
 '''
 import hashlib
 import time
+import collections
 
 txnQueue ={}
 
@@ -40,8 +41,11 @@ class transactionQueue():
         #receive an incoming txn and add it to the queue
         #txnid is an exteranally recognized id - we will hash the id and data to create a internal id signature, this is part of the returned payload
         #txnid will be added to the bloom filter for fast confirmation
-        if txnid && data is None:
+        if txnid and data is None:
             return Exception
+
+        if weight is None:
+            weight = 0
 
         #create an internal signature
         hashed = hashlib.sha256()
@@ -55,9 +59,8 @@ class transactionQueue():
             #proceed, this is where we'd implement some checks for key, data
             #first create the internal transaction signature
             self.txnQueue[keySig] = {'txnid': txnid, 'data': data, 'weight': weight, 'time': time.time()}
-            __addToListQueue(keySig, weight)
+            self.__addToListQueue(keySig, weight)
             #txnIdList.append(txnid)
-
         else:
             #txn already is in the queue; nothing to do (although in reality you'd likely want to notify and maybe check values
             # and figure out why a repeated txn showed up.)
@@ -71,34 +74,33 @@ class transactionQueue():
         #we return 3 values here, the key, value, and a message to indicate success or failure
         retKey = ''
         retValue = ''
-        regMessage = ''
+        retMessage = ''
 
         if minWeight is None:
             minWeight = 0
 
-        #because we need to check for deletions, we can't just get the next iter
-        for key, value in txnQueue:        
-            if txnid is None:
-                #get the first key in the dict not marked for deletion
-                if "X" not in key:
-                    retKey = key
-                    retValue = value
-                    retMessage = True
-                    #mark the key for deletion
-                    txnQueue[str(key)+"X"] = txnQueue.pop[key]
-                    break
-            else:
-                #we are searching for a specific txnid
-                if key == txnid:
-                    #don't need to check for deletion flag as it is implied
-                    #don't need to set the key, we presume they already have it
-                    retValue = value
-                    retMessage = True
-                    txnQueue[str(key)+"X"] = txnQueue.pop[key]
-                else:
-                    #we didn't find the key, must return an error
-                    retMessage = False
-                    break            
+        #fetch the highest weighted keySig from our pendingqueue
+
+        tf = True
+        txnDict = {}
+        
+        while tf:
+            topSig = self.pendingQueue[0]['key']
+            try: 
+                txnDict = self.txnQueue[topSig]
+                tf = False
+            except:
+                #signature from pendingQueue is not in the dictionary
+                self.pendingQueue.remove(topSig)
+
+            retTxnId = txnDict['txnid']
+            retValue = txnDict['data']
+            retMessage = True
+            #mark the key for deletion
+            self.txnQueue[topSig+"__DELETE"] = self.txnQueue.pop(topSig)
+            #self.pendingQueue.remove(topSig)
+
+        return retMessage, retTxnId, retValue
 
 
     def delTxnFromQueue(self, txnid):
@@ -118,13 +120,22 @@ class transactionQueue():
         # the partner function is an inbound listener for new data to add - for now we are just implementing a calling function 
         return self
 
-    def __addToListQueue(keySig, txweight):
+    def __addToListQueue(self, keySig, txweight):
         #interanl function for adding a keySig to our list of items that need to be processed
         #this list is ordered by priority
-        for val in pendingQueue:
+
+        #if the list is already empty, just add this element
+        if len(self.pendingQueue) == 0:
+            self.pendingQueue.insert(0, {'key': keySig, 'weight': txweight})
+            return
+
+        for val in self.pendingQueue:
             if val['weight'] < txweight:
-                pos = enumerate(val)
-                pendingQUeue.inert(pos, {'key': keySig, 'weight': txweight})
-                break
+                pos = self.pendingQueue.index(val)
+                self.pendingQueue.insert(pos, {'key': keySig, 'weight': txweight})
+                return
+
+        #else the weight is the lowest, add it to the end of the list
+        self.pendingQueue.append({'key': keySig, 'weight': txweight})
              
 
