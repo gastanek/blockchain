@@ -14,7 +14,7 @@ from hashblock import hashblock
 
 def processBlock(block):
     blockToProcess = block
-
+    print(blockToProcess)
     #first we need to validate the chain - check that the prevHash of this block equals the last hash
     #in our simple case we are cheating a bit by just grabbing the last file we wrote and getting the hash
     if hashCheck(blockToProcess):

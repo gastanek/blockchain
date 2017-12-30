@@ -70,7 +70,9 @@ class transactionQueue():
         #txnid is optional, if not present we return the first txn
         #the minWeight variable is a positive interger value that the caller provides to create a floor on transactions it would like to process (this is equivalent to the bitcoin txn fee a miner would accept)
         #flag the txnid with an X to denote that it has alrady been fetched but not del from the dict yet
-        
+
+        #let's assume for the moment that, given the sorted queue by weight, that the calling process will always want the top transaction to be processed
+
         #we return 3 values here, the key, value, and a message to indicate success or failure
         retKey = ''
         retValue = ''
@@ -90,7 +92,7 @@ class transactionQueue():
                 txnDict = self.txnQueue[topSig]
                 tf = False
             except:
-                #signature from pendingQueue is not in the dictionary
+                #signature from pendingQueue is not in the dictionary, remove this from the queue
                 self.pendingQueue.remove(topSig)
 
             retTxnId = txnDict['txnid']
@@ -98,7 +100,8 @@ class transactionQueue():
             retMessage = True
             #mark the key for deletion
             self.txnQueue[topSig+"__DELETE"] = self.txnQueue.pop(topSig)
-            #self.pendingQueue.remove(topSig)
+            #not sure it is safe to assume I can delete the first item in the list
+            self.pendingQueue.pop(0)
 
         return retMessage, retTxnId, retValue
 

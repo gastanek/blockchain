@@ -1,5 +1,5 @@
 #fake transaction runner
-#used in the shortterm to create fake transactions
+#used in the shortterm to create fake transactions locally
 
 import time, random, collections
 from transactionQueue import transactionQueue
