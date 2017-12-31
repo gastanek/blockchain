@@ -16,6 +16,7 @@ Main Runnable
 '''
 '''
 Next todos:
+    - separate runnable processes for transaction queue and block processing
     - change the mainblock to have two parts, the txn log and the header blockchain with merkle tree
     - change the persistence to write out both parts to disk
     - reverse the steps for hashing the block and persisting the block

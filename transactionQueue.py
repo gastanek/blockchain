@@ -11,6 +11,8 @@ The queue holds:
 PendingQueue:
 Internal list of transactions that need to be added to the block still.  This transfers the cost of searching for the next transaction from request to insert time
 
+Interface via gRPC
+
 Future:
     - in a high throughput scenario we may consider external caching tools
     - this should check/validate the data
@@ -18,7 +20,7 @@ Future:
     - needs to be able to be blown away to start over
 
 ToDo:
-    - needs to be updated so it initiates and manages itself
+    - standalone process
     - break out the check for specific txns into a separate method
 
 '''

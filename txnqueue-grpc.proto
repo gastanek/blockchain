@@ -1,0 +1,34 @@
+//proto file for generating grpc server services of the transaction queue
+
+syntax="proto3";
+
+package txnQueueInterface;
+
+service txnQueueInterface {
+    //rpc definitions for the grpc services
+
+    rpc setTxnInQueue(txndata) returns (retmessage) {}
+
+    rpc getTxnFromQueue(txnrequest) returns (txnresponse) {}
+}
+message txndata {
+    string txnid=1;
+    string data=2;
+    int32 weight=3;
+}
+
+message txnresponse {
+    string retmessage=1;
+    string id=2;
+    string data=3;    
+}
+
+message retmessage {
+    string rmessage=1;
+}
+
+message txnrequest {
+    string txnid=1;
+    int32 weight=2;
+}
+
