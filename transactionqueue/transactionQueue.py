@@ -88,22 +88,34 @@ class transactionQueue():
         tf = True
         txnDict = {}
         
-        while tf:
-            topSig = self.pendingQueue[0]['key']
-            try: 
-                txnDict = self.txnQueue[topSig]
-                tf = False
-            except:
-                #signature from pendingQueue is not in the dictionary, remove this from the queue
-                self.pendingQueue.remove(topSig)
+        keysig = ''
+        #topSig = self.pendingQueue[0]['key']
 
+        try: 
+            keysig=self.pendingQueue[0]
+            topSig = keysig['key']
+            txnDict = self.txnQueue[topSig]
+            print(txnDict)
+            #need to handle deleting this from the transaction queue in some way, right now just pop from the pending queue means it won't be found again
+            #self.txnQueue[keysig+"__DELETE"] = self.txnQueue.pop(keysig)            
+            tf = False
             retTxnId = txnDict['txnid']
             retValue = txnDict['data']
-            retMessage = True
-            #mark the key for deletion
-            self.txnQueue[topSig+"__DELETE"] = self.txnQueue.pop(topSig)
-            #not sure it is safe to assume I can delete the first item in the list
+            retMessage = "True" 
+        except Exception as e:
+            retMessage = "False"
+            retTxnId = ''
+            retValue = ''
+            keysig = '[EMPTY]'
+            #signature from pendingQueue is not in the dictionary, remove this from the queue
+
+        #mark the key for deletion
+        #self.txnQueue[topSig+"__DELETE"] = self.txnQueue.pop(topSig)
+        #not sure it is safe to assume I can delete the first item in the list
+        '''ToDo: there must be a cleaner way to do this, this would be a bug if the keysig actually equaled this string'''
+        if keysig != '[EMPTY]':
             self.pendingQueue.pop(0)
+
 
         return retMessage, retTxnId, retValue
 

@@ -47,8 +47,9 @@ class TxnServer(txnqueue_grpc_pb2_grpc.txnQueueInterfaceServicer):
         try:
             txnmessage, txnid, value = currentqueue.getTxnFromQueue(txnid, weight)
             return txnqueue_grpc_pb2.txnresponse(retmessage=txnmessage, id=txnid, data=value)
-        except:
-            print('failed to retrieve')
+        except Exception as e:
+            print(e)
+            print('failed to retrieve this thang')
             return txnqueue_grpc_pb2.txnresponse(retmessage="False", id="", data="")
 
 def serve():

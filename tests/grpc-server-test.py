@@ -1,10 +1,10 @@
 '''short routine to test the grpc server services
 '''
+import grpc, sys
+sys.path.insert(0, '../')
 
-import grpc
-
-import txnqueue_grpc_pb2
-import txnqueue_grpc_pb2_grpc
+from transactionqueue import txnqueue_grpc_pb2
+from transactionqueue import txnqueue_grpc_pb2_grpc
 
 import random
 
@@ -25,11 +25,15 @@ def sendInTxn(stub):
 
 def fetchTxn(stub):
     #fetch the data we just sent in
-    for a in txnIdList:
-        print(str(a))
-        inputbits = txnqueue_grpc_pb2.txnrequest(txnid=a, weight=random.randint(1,20))
+    #for a in txnIdList:
+    a=1
+    while a<8:
+        inputbits = txnqueue_grpc_pb2.txnrequest(txnid=chr(a), weight=random.randint(1,20))
         msgresponse = stub.getTxnFromQueue(inputbits)
+        
         print("Return Message " + str(msgresponse))
+        print(str(a))
+        a+=1
 
 def run():
     channel = grpc.insecure_channel('localhost:50051')
@@ -40,10 +44,10 @@ def run():
         sendInTxn(stub)
         i+=1
     print("Transactions sent in, fetching data")
-    while i>0:
-        fetchTxn(stub)
-        i-=1
+    fetchTxn(stub)
     print("Transaction test complete")
 
 if __name__ == '__main__':
+    #for i in len(txnIdList):
+        #txnIdList.pop(i)    
     run()

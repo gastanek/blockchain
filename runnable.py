@@ -50,6 +50,8 @@ def createFakeTxn(queue):
 
 
 if __name__ == "__main__":
+    #kick off the txn server to receive incoming txns
+    
     myblock = mainblock("abcdefgh") #initiate with a reference to our 'genisis' block
     
     #load the transaction queue 

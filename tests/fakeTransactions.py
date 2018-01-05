@@ -1,8 +1,10 @@
 #fake transaction runner
 #used in the shortterm to create fake transactions locally
 
-import time, random, collections
-from transactionQueue import transactionQueue
+import time, random, collections, sys
+sys.path.insert(0, '../')
+
+from transactionqueue import transactionQueue
 
 #list for storing fake txnids 
 txnIdList = []
