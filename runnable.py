@@ -30,15 +30,20 @@ Next todos:
 '''
 
 
-#runnable used testing
-from mainblock import mainblock
-from hashblock import hashblock
-from transactionQueue import transactionQueue
-from processBlock import processBlock
+#from mainblock import mainblock
+#from hashblock import hashblock
+#from transactionQueue import transactionQueue
+from transactionqueue import txn_server
+#from processBlock import processBlock
+from blocklogic import currentBlock
+from tests import grpcservertest
 import random
+
+from concurrent.futures import ProcessPoolExecutor
 
 #list for storing fake txnids 
 txnIdList = []
+
 
 def createFakeTxn(queue):
     #create a random transaction id
@@ -50,10 +55,17 @@ def createFakeTxn(queue):
 
 
 if __name__ == "__main__":
-    #kick off the txn server to receive incoming txns
-    
-    myblock = mainblock("abcdefgh") #initiate with a reference to our 'genisis' block
-    
+    #mutliprocess execution
+    #for simulation purposes, we need 3 processes running - txn queue, block processing, txn creation
+
+    with ProcessPoolExecutor() as executor:
+        executor.map(txn_server.run())
+        executor.map(currentBlock.run())
+        #send in txns
+        executor.map(grpcservertest.longRun())
+
+    #each of the above loops until the keyboard interupts things
+'''
     #load the transaction queue 
     txnMaxCount = 10
     #initiate the queue
@@ -75,12 +87,12 @@ if __name__ == "__main__":
         if message:
             myblock.appendTxn(key + " " + value)
     
-    '''Currently this may be backwards, the processBlock calls the hashing of the block, but I may want to 
-        reverse this as it would mean I could add transactions to the block while it is in the process of 
-        hashing and then finalize the block while simultaneously creating a new one for new transactions.'''
+   #Currently this may be backwards, the processBlock calls the hashing of the block, but I may want to 
+    #    reverse this as it would mean I could add transactions to the block while it is in the process of 
+     #   hashing and then finalize the block while simultaneously creating a new one for new transactions.
     #now call the hashing
     #pBlock = hashblock(myblock)
     #the block is finalized with the correct nonce, now we need to process it
     processBlock(myblock)
 
-    #after successfully processing we'd be looping back to clear out our current working block and set the previous hash with our new hash
+    #after successfully processing we'd be looping back to clear out our current working block and set the previous hash with our new hash'''

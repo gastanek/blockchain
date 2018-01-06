@@ -64,6 +64,10 @@ def serve():
     except KeyboardInterrupt:
             server.stop(0)
 
+def run():
+    currentqueue = transactionQueue()
+    serve()
+    
 if __name__ == '__main__':
     currentqueue = transactionQueue()
     serve()
