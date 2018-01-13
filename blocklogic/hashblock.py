@@ -19,7 +19,7 @@ def hashblock(block):
         currentblock.setNonce(generate_nonce(25))
         #hash the block
         hashedblock = createHashBlock(currentblock)
-        print(hashedblock)
+        #print(hashedblock)
 
         #check the hashblock
         valCheck = str(hashedblock)[0:obits]
@@ -39,16 +39,17 @@ def generate_nonce(length):
 
 def createHashBlock(block):
     #temporary hack - concat the object properties into a string to be hashed; object doesn't support buffer API
+    #take the block object and convert what is necessary for the block hashing
+    
     blockstring=''
     for s in block.txnSet:
-        blockstring += ''.join([str(random.randint(0, 9)) for i in range(5)])
-        blockstring += s
+        blockstring += str(s)
     blockstring += block.prevhash
-
     blockstring += str(block.nonce)
 
     hashed = hashlib.sha256()
     hashed.update(blockstring.encode('utf_16'))
+    #hashed.update(str(block).encode('utf_8'))
     return hashed.hexdigest()
 
 

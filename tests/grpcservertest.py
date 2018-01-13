@@ -5,7 +5,7 @@ sys.path.insert(0, '../')
 
 from transactionqueue import txnqueue_grpc_pb2
 from transactionqueue import txnqueue_grpc_pb2_grpc
-
+import time
 import random
 
 txnIdList = []
@@ -70,4 +70,4 @@ def longRun():
 if __name__ == '__main__':
     #for i in len(txnIdList):
         #txnIdList.pop(i)    
-    run()
+    longRun()

@@ -32,11 +32,11 @@ def processBlock(block):
 def hashCheck(block):
     #TODO: what could be more clever here is to persist the block with the first 10 chars by the prev hash text and
     # if we cannot oppen the file, then we know this block is out of line
-    hashToVerify = str(block.prevhash)[0:10]
+    hashToVerify = str(block.prevhash)[0:15]
     #print(str(hashToVerify))
     blockFileCheck = hashToVerify + ".block"
     #if the .block file exists, we assume this is correctly chained. this would be a faulty assumption and is just a hack
-    path = "blocks/" + str(blockFileCheck)
+    path = "../blocks/" + str(blockFileCheck)
     try:
         open(path, 'r')
         print("Verified previous block, proceeding.")
@@ -51,8 +51,8 @@ def persistBlock(block, blockdata):
     #get the first 15 chars in the hash for the file name
     blockfilename = str(block)[0:15] + ".block"
 
-    path = "blocks/" + str(blockfilename)
-    newBlockFile = open(blockfilename, 'w')
+    path = "../blocks/" + str(blockfilename)
+    newBlockFile = open(path, 'w')
     newBlockFile.write(block)
     #this isn't correct, the blockdata is an object right now, when implement txn processing will change it to raw data plus hash
     newBlockFile.write(str(blockdata))

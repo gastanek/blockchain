@@ -58,12 +58,12 @@ if __name__ == "__main__":
     #mutliprocess execution
     #for simulation purposes, we need 3 processes running - txn queue, block processing, txn creation
 
-    with ProcessPoolExecutor() as executor:
-        executor.map(txn_server.run())
-        executor.map(currentBlock.run())
+    with ProcessPoolExecutor(max_workers=3) as executor:
+        executor.submit(txn_server.run)
         #send in txns
-        executor.map(grpcservertest.longRun())
-
+        executor.submit(grpcservertest.longRun)
+        executor.submit(currentBlock.run)
+        
     #each of the above loops until the keyboard interupts things
 '''
     #load the transaction queue 

@@ -13,6 +13,7 @@ from mainblock import mainblock
 from hashblock import hashblock
 from transactionqueue import transactionQueue
 from processBlock import processBlock
+import random
 
 #this is the synthetic cap, in our case it is max number of txns per bock, 1MB in the case of blockchain
 maxBlockTxns = 20
@@ -21,29 +22,36 @@ def pullTxns(block):
     #loop indefinitely until we have pulled the max number of txns for this block to be processed
     channel = grpc.insecure_channel('localhost:50051')
     stub = txnqueue_grpc_pb2_grpc.txnQueueInterfaceStub(channel)
-
+    print("Pulling transactions for the new block.")
     #data, txnid returned
     #a and b can be set to specific txnid and weight, but some value must be passed
-    a=''
-    b=''
+    a=1
+    b=1
     i=0
     #we will be in this loop until we fill the block that needs to be hashed
     while i < maxBlockTxns:
+        #print(str(i) + " is i; maxBlockTxns is " + str(maxBlockTxns))
         try:
-            inputbits = txnqueue_grpc_pb2.txnrequest(txnid=a, weight=b)
+            #print("getting the bits")
+            #inputbits = txnqueue_grpc_pb2.txnrequest(txnid=chr(a), weight=random.randint(1,20))
+            inputbits = txnqueue_grpc_pb2.txnrequest(txnid=chr(a), weight=b)
+            #print("trying")
             msgresponse = stub.getTxnFromQueue(inputbits)
+            #print(msgresponse)
             if msgresponse.retmessage == "True":
                 block.appendTxn(msgresponse)
                 i+=1
-        except:
+                print("Transaction " + str(i) + " processed.")
+        except Exception as e:
+            print(e)
             #print("Error fethcing txns from the tranaction server to be added to the block")
-            break
+            #break
 
 
 def run():
     #this should be the main loop that is fetching txns and sending the blocks to be processed
     #get our new block
-    block = mainblock("abcdefgh") #initiate with a reference to our 'genisis' block
+    block = mainblock("abcdefghijklmno") #initiate with a reference to our 'genisis' block
 
     #add transactions to this block until full and ready to be processsed
     try:
@@ -51,6 +59,7 @@ def run():
             #keep looping until we signal it to stop
             pullTxns(block) #put transactions in the block
             hashedblock = processBlock(block) #process the block hash
+            print(hashedblock)
             block = mainblock(hashedblock) #get a new block with the hash of the old one
             #rinse and repeat until we are told to stop
     except KeyboardInterrupt:
