@@ -16,9 +16,7 @@ sys.path.insert(0, '../')
 
 def processBlock(block):
     blockToProcess = block
-    #print(blockToProcess)
     #first we need to validate the chain - check that the prevHash of this block equals the last hash
-    #in our simple case we are cheating a bit by just grabbing the last file we wrote and getting the hash
     if hashCheck(blockToProcess):
         
         #now run the hash on the block
@@ -30,10 +28,17 @@ def processBlock(block):
 
 
 def hashCheck(block):
+    #take the current block, grab the prevhash, ?get last blok in chain, hash last block and compare
+    #how do I know the last block in the chain? not by timestamp? Internal, global structure seems faulty
+    #file on disk?
+    #if I have a global structure it would need to be rebuilt on restart, how would I know if it is tampered with?
+    #what to do at a billion blocks?  Or maybe I could assume I only need the last 100 blocks in an internal structure - 
+    #then that probably punts decisions to the consensus 
+
     #TODO: what could be more clever here is to persist the block with the first 10 chars by the prev hash text and
     # if we cannot oppen the file, then we know this block is out of line
     hashToVerify = str(block.prevhash)[0:15]
-    #print(str(hashToVerify))
+    #none of this is correct in that checking file name does not verify previous block
     blockFileCheck = hashToVerify + ".block"
     #if the .block file exists, we assume this is correctly chained. this would be a faulty assumption and is just a hack
     path = "../blocks/" + str(blockFileCheck)
@@ -53,7 +58,8 @@ def persistBlock(block, blockdata):
 
     path = "../blocks/" + str(blockfilename)
     newBlockFile = open(path, 'w')
-    newBlockFile.write(block)
+    newBlockFile.write("Previous Hash: " + block + "\n")
+
     #this isn't correct, the blockdata is an object right now, when implement txn processing will change it to raw data plus hash
     newBlockFile.write(str(blockdata))
     #TODO: this is only hacked write now with now checks and validation
