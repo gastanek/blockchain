@@ -56,21 +56,32 @@ def persistBlock(block, blockdata):
     #get the first 15 chars in the hash for the file name
     blockfilename = str(block)[0:15] + ".block"
 
-    path = "../blocks/" + str(blockfilename)
-    newBlockFile = open(path, 'w')
-    newBlockFile.write("Previous Hash: " + block + "\n")
+    try:
+        path = "../blocks/" + str(blockfilename)
+        newBlockFile = open(path, 'w')
+        newBlockFile.write("Previous Hash: " + block + "\n")
 
-    #this isn't correct, the blockdata is an object right now, when implement txn processing will change it to raw data plus hash
-    newBlockFile.write(str(blockdata))
-    #TODO: this is only hacked write now with now checks and validation
-    newBlockFile.close()
-
+        '''write out the block contents to the file
+            txnSet = []
+            timestamp = ''
+        '''
+        newBlockFile.write(str(blockdata.timestamp) + "\n")
+        i=0
+        for txn in blockdata.txnSet:
+            newBlockFile.write(str(i) + " Txn: ")
+            newBlockFile.write(str(txn) + "\n")
+            i+=1
+        newBlockFile.close()
+    except:
+        print("Critical failure in persisting the block to disk.  Aborting.")
+        sys.exit()
+    
 
 #main routine for testing only
 if __name__ == '__main__':
     #create a block with the previous hash of abcdefgh == first block
-    block = mainblock("abcdefgh")
-    block.txnSet = ['1233', '1234', '5154', '13512', '15512', '135135', '2351', '23512']
+    block = mainblock("abcdefghijklmno")
+    block.txnSet = ['1233', '12323254', '5124624654', '13512', '15512', '135135', '2351', '23512']
     block.setFinalTime()
 
     processBlock(block)
