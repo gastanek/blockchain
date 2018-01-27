@@ -29,6 +29,7 @@ class mainblock():
     #it doesn't need to be coin transactions exclusively
     txnSet = []
     timestamp = ''
+    merkletree = []
 
     #Main page for our block
     def __init__(self, prevhash):

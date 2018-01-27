@@ -23,34 +23,59 @@ def getMerkleTree(txnset):
         #quite simply hash the txns
         returnTree.append(processHash(txn))
 
+    return produceNodeTree(returnTree, txnset)
+
+def produceNodeTree(leaftree, txnset):
     priorPosition = 0
-    position = len(returnTree)
+    position = len(leaftree)
     levels = math.floor(len(txnset)/2)-1  #first level is the hashed txns
     while levels > 0:
         groups = math.ceil((position - priorPosition)/2)
         while groups > 0:
-            hash1 = returnTree[priorPosition]
+            hash1 = leaftree[priorPosition]
             priorPosition += 1
             if position - priorPosition > 1:
-                hash2 = returnTree[priorPosition+1]
+                hash2 = leaftree[priorPosition+1]
                 priorPosition += 1
             else:
                 hash2 = hash1
-            returnTree.append(processHash(hash1 + hash2))
+            leaftree.append(processHash(hash1 + hash2))
             groups -= 1
         #move the position forward by groups
-        position = len(returnTree)
+        position = len(leaftree)
         levels -= 1
 
-    return returnTree
+    return leaftree
 
 def processHash(txnvalue):
     #simply takes a txn and returns a hash value to the caller
 
+    blockstring=str(txnvalue)
+    print(blockstring)
+    
+
     hashed = hashlib.sha256()
-    hashed.update(txnvalue.encode('utf_16'))
+    hashed.update(blockstring.encode('utf_16'))
     #hashed.update(str(block).encode('utf_8'))
     return hashed.hexdigest()
+
+
+def validateTxnInBlock(hashSet, txn, blockTxnCount):
+    #gets the merkle tree hash set from the block, the txn to validate, and validates the produced roots match
+
+    validRoot = hashSet[len(hashSet)-1] #this is the final root to validate
+
+    #required, the txn sent in is the hash of the transaction that is expected to be in the block
+    #blockTxnCount are the number of transactions that were found in the block
+
+    #find the txn in the hashSet
+    try:
+        txnindex = hashSet.index(txn)
+    except ValueError:
+        return False
+
+    
+
 
 
 
@@ -60,7 +85,7 @@ if __name__ == '__main__':
 
     txnIdList = []
     i=0
-    while i < 10:
+    while i < 15:
         #create a random transaction id
         chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k' 'l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
         txndata = ''.join([chars[random.randint(1,24)] for a in range(50)]) #generate random 50 char string

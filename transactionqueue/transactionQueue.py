@@ -113,7 +113,7 @@ class transactionQueue():
         #self.txnQueue[topSig+"__DELETE"] = self.txnQueue.pop(topSig)
         #not sure it is safe to assume I can delete the first item in the list
         '''ToDo: there must be a cleaner way to do this, this would be a bug if the keysig actually equaled this string'''
-        print(str(keysig))
+        #print(str(keysig))
         if keysig != '[EMPTY]':
             self.pendingQueue.pop(0)
 

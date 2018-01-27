@@ -3,7 +3,7 @@ import hashlib
 import random
 
 #variable for the number of initial 0 bits to achieve with the hash
-obits = 5
+obits = 3
 
 hashedblock = ''
 

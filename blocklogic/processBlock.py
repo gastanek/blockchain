@@ -9,6 +9,7 @@ Processing a block involves:
 
 from mainblock import mainblock
 from hashblock import hashblock
+import merkletree
 import sys
 sys.path.insert(0, '../')
 
@@ -16,6 +17,9 @@ sys.path.insert(0, '../')
 
 def processBlock(block):
     blockToProcess = block
+
+    blockToProcess.merkletree = merkletree.getMerkleTree(block.txnSet)
+
     #first we need to validate the chain - check that the prevHash of this block equals the last hash
     if hashCheck(blockToProcess):
         
@@ -71,6 +75,9 @@ def persistBlock(block, blockdata):
             newBlockFile.write(str(i) + " Txn: ")
             newBlockFile.write(str(txn) + "\n")
             i+=1
+        for mnode in blockdata.merkletree:
+            newBlockFile.write(str(mnode) + "\n")            
+
         newBlockFile.close()
     except:
         print("Critical failure in persisting the block to disk.  Aborting.")

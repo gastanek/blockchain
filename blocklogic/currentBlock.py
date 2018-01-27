@@ -13,6 +13,7 @@ from mainblock import mainblock
 from hashblock import hashblock
 from transactionqueue import transactionQueue
 from processBlock import processBlock
+from blockList import blockList
 import random
 
 #this is the synthetic cap, in our case it is max number of txns per bock, 1MB in the case of blockchain
@@ -52,6 +53,7 @@ def run():
     #this should be the main loop that is fetching txns and sending the blocks to be processed
     #get our new block
     block = mainblock("abcdefghijklmno") #initiate with a reference to our 'genisis' block
+    blocklist = blockList("../blocks")
 
     #add transactions to this block until full and ready to be processsed
     try:
@@ -59,6 +61,7 @@ def run():
             #keep looping until we signal it to stop
             pullTxns(block) #put transactions in the block
             hashedblock = processBlock(block) #process the block hash
+            blocklist.pushBlock(hashedblock)
             print(hashedblock)
             block = mainblock(hashedblock) #get a new block with the hash of the old one
             #rinse and repeat until we are told to stop

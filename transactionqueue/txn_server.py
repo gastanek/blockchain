@@ -46,7 +46,6 @@ class TxnServer(txnqueue_grpc_pb2_grpc.txnQueueInterfaceServicer):
         weight=request.weight
         try:
             txnmessage, txnid, value = currentqueue.getTxnFromQueue(txnid, weight)
-            print(txnmessage.retmessage)
             return txnqueue_grpc_pb2.txnresponse(retmessage=txnmessage, id=txnid, data=value)
         except Exception as e:
             print(e)
