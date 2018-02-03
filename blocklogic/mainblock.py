@@ -24,7 +24,8 @@ import time
 class mainblock():
 
     #Random ceiling on the maximum number of txns per block
-    maxTxns = 8
+    #note this should be matched up with the maximum set in pull transactions
+    maxTxns = 20
     #array of transactions to be held.  in our case, this can be anything added to the set
     #it doesn't need to be coin transactions exclusively
     txnSet = []

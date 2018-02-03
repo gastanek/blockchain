@@ -63,7 +63,7 @@ def persistBlock(block, blockdata):
     try:
         path = "../blocks/" + str(blockfilename)
         newBlockFile = open(path, 'w')
-        newBlockFile.write("Previous Hash: " + block + "\n")
+        newBlockFile.write("Previous Hash: " + blockdata.prevhash + "\n") 
 
         '''write out the block contents to the file
             txnSet = []

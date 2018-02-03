@@ -24,7 +24,7 @@ def longRunTxns(stub):
     #create a random transaction id
     chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k' 'l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     txnid = ''.join([str(random.randint(0, 9)) for i in range(6)])
-    txndata = ''.join([chars[random.randint(1,24)] for i in range(50)]) #generate random 50 char string
+    txndata = ''.join("TxnDetails: " + [chars[random.randint(1,24)] for i in range(50)]) #generate random 50 char string
     txnbits = txnqueue_grpc_pb2.txndata(txnid=txnid, data=txndata, weight=random.randint(1,20))
     stub.setTxnInQueue(txnbits)
 

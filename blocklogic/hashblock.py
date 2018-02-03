@@ -42,7 +42,7 @@ def createHashBlock(block):
     #take the block object and convert what is necessary for the block hashing
     
     blockstring=''
-    for s in block.txnSet:
+    for s in block.merkletree:
         blockstring += str(s)
     blockstring += block.prevhash
     blockstring += str(block.nonce)

@@ -18,10 +18,21 @@ The 3 main processes can be run separately by running:
 Implemented:
 <ul><li>main block class</li>
 <li>transaction queue to hold incoming transactions to be processed by the block</li>
+<li>Global block list queue that will later be used with consensus
 <li>grpc server for listening for incoming transactions and serving transactions from the queue to the block</li>
+<li>implementation of merkle tree persisted with each block</li>
 <li>hashing methods to hash the blocks theoretically implementing a proof of work</li>
 <li>processing and verifying the blocks are chained together as expected</li>
+
 </ul>
 
 The txn_server will manage the transaction queue.  The grpcservertest will generate fake transactions to send into the transaction queue via the txn_server.  The currentBlock is responsible for pulling transactions off the queue from the txn_server and adding them to the current block.  Once the block is full (in this example we are using max 20 txns, bitcoin max is 1MB) it is sent to be processed.  Processing first verifies the connection to the blockchain by checking the previous hash against the last blockfile, then hashes the current block and persists it to disk (assuming the chain is verified.)  Then a new block is created with the previous hash value set to the hash of the block just hashed.  And the process repeats indefinitely.
 
+To be added:
+Validate txn in block via merkle tree
+Swap to config file for global variables
+Rollback and better handling if errors - txns in the queue
+Change Proof of work to increase difficulty
+Different block size handling
+Tests 
+distributed

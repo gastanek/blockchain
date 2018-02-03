@@ -62,7 +62,7 @@ def run():
             pullTxns(block) #put transactions in the block
             hashedblock = processBlock(block) #process the block hash
             blocklist.pushBlock(hashedblock)
-            print(hashedblock)
+            #print(hashedblock)
             block = mainblock(hashedblock) #get a new block with the hash of the old one
             #rinse and repeat until we are told to stop
     except KeyboardInterrupt:

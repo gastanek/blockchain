@@ -61,7 +61,8 @@ def processHash(txnvalue):
 
 
 def validateTxnInBlock(hashSet, txn, blockTxnCount):
-    #gets the merkle tree hash set from the block, the txn to validate, and validates the produced roots match
+
+    # gets the merkle tree hash set from the block, the txn to validate, and validates the produced roots match
 
     validRoot = hashSet[len(hashSet)-1] #this is the final root to validate
 
