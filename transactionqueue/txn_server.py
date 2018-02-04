@@ -52,6 +52,13 @@ class TxnServer(txnqueue_grpc_pb2_grpc.txnQueueInterfaceServicer):
             print('failed to retrieve this thang')
             return txnqueue_grpc_pb2.txnresponse(retmessage="False", id="", data="")
 
+    def flushDeleteQueue(self, request, context):
+        try:
+            currentqueue.flushDeleteQueue(request)
+            return txnqueue_grpc_pb2.retmessage(rmessage="success")
+        except Exception as e:
+            print(e)
+
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     #txnqueue_grpc_pb2_grpc.add_txnQueueInterfaceServicer_to_server(TxnServer(), server)

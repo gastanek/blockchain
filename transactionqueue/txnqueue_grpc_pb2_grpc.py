@@ -24,6 +24,11 @@ class txnQueueInterfaceStub(object):
         request_serializer=txnqueue__grpc__pb2.txnrequest.SerializeToString,
         response_deserializer=txnqueue__grpc__pb2.txnresponse.FromString,
         )
+    self.flushDeleteQueue = channel.unary_unary(
+        '/txnQueueInterface.txnQueueInterface/flushDeleteQueue',
+        request_serializer=txnqueue__grpc__pb2.flushSpecific.SerializeToString,
+        response_deserializer=txnqueue__grpc__pb2.retmessage.FromString,
+        )
 
 
 class txnQueueInterfaceServicer(object):
@@ -44,6 +49,13 @@ class txnQueueInterfaceServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def flushDeleteQueue(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_txnQueueInterfaceServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -56,6 +68,11 @@ def add_txnQueueInterfaceServicer_to_server(servicer, server):
           servicer.getTxnFromQueue,
           request_deserializer=txnqueue__grpc__pb2.txnrequest.FromString,
           response_serializer=txnqueue__grpc__pb2.txnresponse.SerializeToString,
+      ),
+      'flushDeleteQueue': grpc.unary_unary_rpc_method_handler(
+          servicer.flushDeleteQueue,
+          request_deserializer=txnqueue__grpc__pb2.flushSpecific.FromString,
+          response_serializer=txnqueue__grpc__pb2.retmessage.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

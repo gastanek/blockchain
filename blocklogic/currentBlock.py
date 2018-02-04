@@ -19,10 +19,19 @@ import random
 #this is the synthetic cap, in our case it is max number of txns per bock, 1MB in the case of blockchain
 maxBlockTxns = 20
 
-def pullTxns(block):
-    #loop indefinitely until we have pulled the max number of txns for this block to be processed
+channel = ''
+stub = ''
+
+def createChannel():
+
     channel = grpc.insecure_channel('localhost:50051')
     stub = txnqueue_grpc_pb2_grpc.txnQueueInterfaceStub(channel)
+
+    return stub
+
+def pullTxns(stub, block):
+
+    #loop indefinitely until we have pulled the max number of txns for this block to be processed
     print("Pulling transactions for the new block.")
     #data, txnid returned
     #a and b can be set to specific txnid and weight, but some value must be passed
@@ -48,19 +57,24 @@ def pullTxns(block):
             #print("Error fethcing txns from the tranaction server to be added to the block")
             #break
 
+def flushTxnDeletes(stub):
+    inputbits = txnqueue_grpc_pb2.flushSpecific()
+    stub.flushDeleteQueue(inputbits)
 
 def run():
     #this should be the main loop that is fetching txns and sending the blocks to be processed
     #get our new block
     block = mainblock("abcdefghijklmno") #initiate with a reference to our 'genisis' block
     blocklist = blockList("../blocks")
-
+    stub = createChannel()
     #add transactions to this block until full and ready to be processsed
     try:
         while True:
             #keep looping until we signal it to stop
-            pullTxns(block) #put transactions in the block
+            pullTxns(stub, block) #put transactions in the block
             hashedblock = processBlock(block) #process the block hash
+            #this is where I should ensure txn queue deletes flushed
+            flushTxnDeletes(stub)
             blocklist.pushBlock(hashedblock)
             #print(hashedblock)
             block = mainblock(hashedblock) #get a new block with the hash of the old one

@@ -11,24 +11,24 @@ The queue holds:
 PendingQueue:
 Internal list of transactions that need to be added to the block still.  This transfers the cost of searching for the next transaction from request to insert time
 
+PendingDeleteQueue holds transactions that have been pulled by pblock to process in a block.  A signal is sent
+    to this queue manager to flush the deletes if the block is successfully written to disk.  If there is an error
+    or we are signaled that we need to orphan our chain, we can then roll back the txns from this queue and catch up
+    or completely flush
+
+txnQueue is the queue with all transaction data
+pendingQueue is the sorted list of txns by weight so we can grab the highest weighted txns first
+
+
 Interface via gRPC
-
-Future:
-    - in a high throughput scenario we may consider external caching tools
-    - this should check/validate the data
-    - the set of txn data should be validated/checked to be sure anything already processed isn't readded
-    - needs to be able to be blown away to start over
-
-ToDo:
-    - standalone process
-    - break out the check for specific txns into a separate method
 
 '''
 import hashlib
 import time
 import collections
 
-txnQueue ={}
+txnQueue = {}
+pendingDeleteQueue = []
 
 class transactionQueue():
     #main transaction queue block
@@ -89,11 +89,12 @@ class transactionQueue():
         txnDict = {}
         
         keysig = ''
-        #topSig = self.pendingQueue[0]['key']
 
         try: 
+            #this just fetches the highest weighted txn
             keysig=self.pendingQueue[0]
             topSig = keysig['key']
+            minWeight = keysig['weight']
             txnDict = self.txnQueue[topSig]
             print(txnDict)
             #need to handle deleting this from the transaction queue in some way, right now just pop from the pending queue means it won't be found again
@@ -116,7 +117,9 @@ class transactionQueue():
         #print(str(keysig))
         if keysig != '[EMPTY]':
             self.pendingQueue.pop(0)
-
+            #push these values to the pendingDeleteQueue for later purging
+            delTxn = {'key':retTxnId, 'value': retValue, 'weight': minWeight}
+            pendingDeleteQueue.append(delTxn)
 
         return retMessage, retTxnId, retValue
 
@@ -129,6 +132,10 @@ class transactionQueue():
         if delkey in txnQueue:
             del txnQueue[delkey]
 
+    def flushDeleteQueue(self, nothing):
+        #this flushes the transactions that have been pulled by the block processing and are no longer in txn queue
+        #it is called because those txns were persisted to the chain or because we need to rebuild everything from consensus call
+        del pendingDeleteQueue[:]
 
     def getQueue(self):
         return self

@@ -10,6 +10,8 @@ service txnQueueInterface {
     rpc setTxnInQueue(txndata) returns (retmessage) {}
 
     rpc getTxnFromQueue(txnrequest) returns (txnresponse) {}
+
+    rpc flushDeleteQueue(flushSpecific) returns (retmessage) {}
 }
 message txndata {
     string txnid=1;
@@ -30,5 +32,10 @@ message retmessage {
 message txnrequest {
     string txnid=1;
     int32 weight=2;
+}
+
+message flushSpecific {
+
+
 }
 

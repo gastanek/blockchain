@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='txnqueue-grpc.proto',
   package='txnQueueInterface',
   syntax='proto3',
-  serialized_pb=_b('\n\x13txnqueue-grpc.proto\x12\x11txnQueueInterface\"6\n\x07txndata\x12\r\n\x05txnid\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\t\x12\x0e\n\x06weight\x18\x03 \x01(\x05\";\n\x0btxnresponse\x12\x12\n\nretmessage\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\t\"\x1e\n\nretmessage\x12\x10\n\x08rmessage\x18\x01 \x01(\t\"+\n\ntxnrequest\x12\r\n\x05txnid\x18\x01 \x01(\t\x12\x0e\n\x06weight\x18\x02 \x01(\x05\x32\xb5\x01\n\x11txnQueueInterface\x12L\n\rsetTxnInQueue\x12\x1a.txnQueueInterface.txndata\x1a\x1d.txnQueueInterface.retmessage\"\x00\x12R\n\x0fgetTxnFromQueue\x12\x1d.txnQueueInterface.txnrequest\x1a\x1e.txnQueueInterface.txnresponse\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x13txnqueue-grpc.proto\x12\x11txnQueueInterface\"6\n\x07txndata\x12\r\n\x05txnid\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\t\x12\x0e\n\x06weight\x18\x03 \x01(\x05\";\n\x0btxnresponse\x12\x12\n\nretmessage\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\t\"\x1e\n\nretmessage\x12\x10\n\x08rmessage\x18\x01 \x01(\t\"+\n\ntxnrequest\x12\r\n\x05txnid\x18\x01 \x01(\t\x12\x0e\n\x06weight\x18\x02 \x01(\x05\"\x0f\n\rflushSpecific2\x8c\x02\n\x11txnQueueInterface\x12L\n\rsetTxnInQueue\x12\x1a.txnQueueInterface.txndata\x1a\x1d.txnQueueInterface.retmessage\"\x00\x12R\n\x0fgetTxnFromQueue\x12\x1d.txnQueueInterface.txnrequest\x1a\x1e.txnQueueInterface.txnresponse\"\x00\x12U\n\x10\x66lushDeleteQueue\x12 .txnQueueInterface.flushSpecific\x1a\x1d.txnQueueInterface.retmessage\"\x00\x62\x06proto3')
 )
 
 
@@ -183,10 +183,35 @@ _TXNREQUEST = _descriptor.Descriptor(
   serialized_end=234,
 )
 
+
+_FLUSHSPECIFIC = _descriptor.Descriptor(
+  name='flushSpecific',
+  full_name='txnQueueInterface.flushSpecific',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=236,
+  serialized_end=251,
+)
+
 DESCRIPTOR.message_types_by_name['txndata'] = _TXNDATA
 DESCRIPTOR.message_types_by_name['txnresponse'] = _TXNRESPONSE
 DESCRIPTOR.message_types_by_name['retmessage'] = _RETMESSAGE
 DESCRIPTOR.message_types_by_name['txnrequest'] = _TXNREQUEST
+DESCRIPTOR.message_types_by_name['flushSpecific'] = _FLUSHSPECIFIC
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 txndata = _reflection.GeneratedProtocolMessageType('txndata', (_message.Message,), dict(
@@ -217,6 +242,13 @@ txnrequest = _reflection.GeneratedProtocolMessageType('txnrequest', (_message.Me
   ))
 _sym_db.RegisterMessage(txnrequest)
 
+flushSpecific = _reflection.GeneratedProtocolMessageType('flushSpecific', (_message.Message,), dict(
+  DESCRIPTOR = _FLUSHSPECIFIC,
+  __module__ = 'txnqueue_grpc_pb2'
+  # @@protoc_insertion_point(class_scope:txnQueueInterface.flushSpecific)
+  ))
+_sym_db.RegisterMessage(flushSpecific)
+
 
 
 _TXNQUEUEINTERFACE = _descriptor.ServiceDescriptor(
@@ -225,8 +257,8 @@ _TXNQUEUEINTERFACE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=237,
-  serialized_end=418,
+  serialized_start=254,
+  serialized_end=522,
   methods=[
   _descriptor.MethodDescriptor(
     name='setTxnInQueue',
@@ -244,6 +276,15 @@ _TXNQUEUEINTERFACE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_TXNREQUEST,
     output_type=_TXNRESPONSE,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='flushDeleteQueue',
+    full_name='txnQueueInterface.txnQueueInterface.flushDeleteQueue',
+    index=2,
+    containing_service=None,
+    input_type=_FLUSHSPECIFIC,
+    output_type=_RETMESSAGE,
     options=None,
   ),
 ])
