@@ -1,4 +1,4 @@
-'''
+jkiuhnjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjki,umhnlllllllllllllllllllllllllllhlnnnnnnnnnnnnnnnllllnllljjjj'''
 Created 12/21/2017 by gastanek
 Personal exercise used to demonstrate simple blockchain concepts and proof of work concepts
 
